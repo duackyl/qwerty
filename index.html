@@ -172,6 +172,9 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
+            resize: both;
+            min-width: 400px;
+            min-height: 300px;
         }
 
         .game-window.active {
@@ -208,7 +211,7 @@
             flex: 1;
             display: block;
             background: #1a1a1a;
-            cursor: none;
+            cursor: crosshair;
         }
 
         #gameCanvas.paused {
@@ -524,7 +527,7 @@
     <!-- FPS Game Window -->
     <div class="game-window" id="gameWindow">
         <div class="game-window-header" id="gameHeader">
-            <span>FPS GAME - FIRST PERSON SHOOTER</span>
+            <span>FPS GAME - MAZE SHOOTER</span>
             <button class="game-window-close" onclick="closeGameWindow()">✕</button>
         </div>
         <div id="gameContainer">
@@ -550,10 +553,10 @@
                 <p style="font-size: 18px; margin-top: 20px;">Press ESC to Resume</p>
             </div>
             <div id="gameStartScreen">
-                <h1>█▀▀ █▀█ █▀ █▀▄▀█ █▀█ █▀ █ ▀█▀ █▀▀ █▀▄ █▀▄▀█ █▀█ █▀▄ █▀▀</h1>
+                <h1>MAZE SHOOTER</h1>
+                <p>Survive the maze</p>
                 <p>Use Mouse to Look Around</p>
-                <p>WASD to Move - SPACE to Jump</p>
-                <p>Click to Shoot - Survive the waves!</p>
+                <p>WASD to Move - Click to Shoot</p>
                 <p style="margin-top: 20px; color: #00ff00;">Press ESC to Pause</p>
                 <button class="game-start-button" onclick="startGame()">START GAME</button>
             </div>
@@ -572,6 +575,40 @@
         let gameState = null;
         let isDragging = false;
         let dragOffset = { x: 0, y: 0 };
+        let maze = [];
+
+        function generateMaze() {
+            const width = 100;
+            const height = 100;
+            const walls = [];
+
+            // Outer walls
+            for (let x = 0; x < width; x++) {
+                walls.push({ x1: x, y1: 0, x2: x + 1, y2: 0 });
+                walls.push({ x1: x, y1: height, x2: x + 1, y2: height });
+            }
+            for (let y = 0; y < height; y++) {
+                walls.push({ x1: 0, y1: y, x2: 0, y2: y + 1 });
+                walls.push({ x1: width, y1: y, x2: width, y2: y + 1 });
+            }
+
+            // Interior walls
+            const cellSize = 10;
+            for (let x = cellSize; x < width; x += cellSize) {
+                for (let y = 0; y < height; y += cellSize / 2) {
+                    walls.push({ x1: x, y1: y, x2: x, y2: y + cellSize / 2 });
+                }
+            }
+            for (let y = cellSize; y < height; y += cellSize) {
+                for (let x = 0; x < width; x += cellSize / 2) {
+                    if (Math.random() > 0.3) {
+                        walls.push({ x1: x, y1: y, x2: x + cellSize / 2, y2: y });
+                    }
+                }
+            }
+
+            return walls;
+        }
 
         function openGameWindow() {
             document.getElementById('gameWindow').classList.add('active');
@@ -611,20 +648,19 @@
             gameCanvas.height = gameWindow.offsetHeight - 25;
 
             if (!gameState) {
+                maze = generateMaze();
                 gameState = {
                     camera: {
-                        x: 150,
-                        y: 150,
+                        x: 10,
+                        y: 10,
                         angle: 0,
                         fov: Math.PI / 3
                     },
                     player: {
                         vx: 0,
                         vy: 0,
-                        speed: 2,
-                        jumpVel: 0,
-                        height: 1.7,
-                        viewBob: 0
+                        speed: 0.5,
+                        height: 1.7
                     },
                     keys: {},
                     enemies: [],
@@ -635,8 +671,8 @@
                     maxAmmo: 30,
                     health: 100,
                     maxHealth: 100,
-                    mapWidth: 400,
-                    mapHeight: 400
+                    mapWidth: 100,
+                    mapHeight: 100
                 };
 
                 setupGameControls();
@@ -660,10 +696,9 @@
                 if (gameRunning && !gamePaused) {
                     const rect = gameCanvas.getBoundingClientRect();
                     const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
                     
                     const deltaX = e.clientX - rect.left - centerX;
-                    gameState.camera.angle += deltaX * 0.003;
+                    gameState.camera.angle += deltaX * 0.005;
                 }
             });
             
@@ -684,13 +719,15 @@
             gameState.ammo = gameState.maxAmmo;
             gameState.enemies = [];
             gameState.projectiles = [];
+            gameState.camera.x = 10;
+            gameState.camera.y = 10;
             spawnWave();
             gameLoop();
         }
 
         function resetGame() {
-            gameState.camera.x = 150;
-            gameState.camera.y = 150;
+            gameState.camera.x = 10;
+            gameState.camera.y = 10;
             gameState.camera.angle = 0;
             gameState.health = gameState.maxHealth;
             gameState.kills = 0;
@@ -711,9 +748,9 @@
                 x: gameState.camera.x,
                 y: gameState.camera.y,
                 angle: gameState.camera.angle,
-                speed: 8,
+                speed: 0.5,
                 distance: 0,
-                maxDistance: 300
+                maxDistance: 50
             });
             
             gameState.ammo--;
@@ -721,19 +758,69 @@
         }
 
         function spawnWave() {
-            const count = 3 + gameState.wave;
+            const count = 2 + gameState.wave;
             for (let i = 0; i < count; i++) {
-                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-                const distance = 100 + Math.random() * 50;
+                let x, y, valid;
+                do {
+                    valid = true;
+                    x = 20 + Math.random() * (gameState.mapWidth - 40);
+                    y = 20 + Math.random() * (gameState.mapHeight - 40);
+                    
+                    const dist = Math.hypot(x - gameState.camera.x, y - gameState.camera.y);
+                    if (dist < 15) valid = false;
+                    
+                    for (const wall of maze) {
+                        if (Math.hypot(x - wall.x1, y - wall.y1) < 2) valid = false;
+                    }
+                } while (!valid);
+
                 gameState.enemies.push({
-                    x: gameState.camera.x + Math.cos(angle) * distance,
-                    y: gameState.camera.y + Math.sin(angle) * distance,
+                    x: x,
+                    y: y,
                     health: 30 + gameState.wave * 10,
                     maxHealth: 30 + gameState.wave * 10,
-                    size: 0.5,
-                    speed: 0.5 + gameState.wave * 0.1
+                    size: 0.8,
+                    speed: 0.1 + gameState.wave * 0.02
                 });
             }
+        }
+
+        function isWallColliding(x, y, radius) {
+            for (const wall of maze) {
+                const distToWall = pointToLineDistance(x, y, wall.x1, wall.y1, wall.x2, wall.y2);
+                if (distToWall < radius) return true;
+            }
+            return false;
+        }
+
+        function pointToLineDistance(px, py, x1, y1, x2, y2) {
+            const A = px - x1;
+            const B = py - y1;
+            const C = x2 - x1;
+            const D = y2 - y1;
+
+            const dot = A * C + B * D;
+            const lenSq = C * C + D * D;
+
+            let param = -1;
+            if (lenSq !== 0) param = dot / lenSq;
+
+            let xx, yy;
+
+            if (param < 0) {
+                xx = x1;
+                yy = y1;
+            } else if (param > 1) {
+                xx = x2;
+                yy = y2;
+            } else {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+
+            const dx = px - xx;
+            const dy = py - yy;
+            return Math.sqrt(dx * dx + dy * dy);
         }
 
         function updateGame() {
@@ -764,11 +851,16 @@
                 gameState.player.vy -= sideY * gameState.player.speed;
             }
 
-            gameState.camera.x += gameState.player.vx;
-            gameState.camera.y += gameState.player.vy;
+            const newX = gameState.camera.x + gameState.player.vx;
+            const newY = gameState.camera.y + gameState.player.vy;
 
-            gameState.camera.x = Math.max(20, Math.min(gameState.mapWidth - 20, gameState.camera.x));
-            gameState.camera.y = Math.max(20, Math.min(gameState.mapHeight - 20, gameState.camera.y));
+            if (!isWallColliding(newX, newY, 0.5)) {
+                gameState.camera.x = newX;
+                gameState.camera.y = newY;
+            }
+
+            gameState.camera.x = Math.max(1, Math.min(gameState.mapWidth - 1, gameState.camera.x));
+            gameState.camera.y = Math.max(1, Math.min(gameState.mapHeight - 1, gameState.camera.y));
 
             // Update projectiles
             for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
@@ -777,9 +869,7 @@
                 proj.x += Math.cos(proj.angle) * proj.speed;
                 proj.y += Math.sin(proj.angle) * proj.speed;
 
-                if (proj.distance > proj.maxDistance ||
-                    proj.x < 0 || proj.x > gameState.mapWidth ||
-                    proj.y < 0 || proj.y > gameState.mapHeight) {
+                if (proj.distance > proj.maxDistance || isWallColliding(proj.x, proj.y, 0.1)) {
                     gameState.projectiles.splice(i, 1);
                     continue;
                 }
@@ -788,7 +878,7 @@
                 for (let j = gameState.enemies.length - 1; j >= 0; j--) {
                     const enemy = gameState.enemies[j];
                     const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
-                    if (dist < enemy.size + 0.2) {
+                    if (dist < enemy.size + 0.3) {
                         enemy.health -= 30;
                         gameState.projectiles.splice(i, 1);
 
@@ -808,14 +898,19 @@
                 const dy = gameState.camera.y - enemy.y;
                 const dist = Math.hypot(dx, dy);
 
-                if (dist > 0.1) {
-                    enemy.x += (dx / dist) * enemy.speed;
-                    enemy.y += (dy / dist) * enemy.speed;
+                if (dist > 0.5) {
+                    const newEnemyX = enemy.x + (dx / dist) * enemy.speed;
+                    const newEnemyY = enemy.y + (dy / dist) * enemy.speed;
+                    
+                    if (!isWallColliding(newEnemyX, newEnemyY, 0.4)) {
+                        enemy.x = newEnemyX;
+                        enemy.y = newEnemyY;
+                    }
                 }
 
                 // Damage player if too close
-                if (dist < 2) {
-                    gameState.health -= 0.5;
+                if (dist < 1.5) {
+                    gameState.health -= 0.3;
                 }
             }
 
@@ -833,19 +928,19 @@
         }
 
         function drawGame() {
-            // Clear background
-            gameCtx.fillStyle = '#0a0a0a';
-            gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-
             const w = gameCanvas.width;
             const h = gameCanvas.height;
 
-            // Draw ceiling (top half)
-            gameCtx.fillStyle = '#1a1a1a';
+            // Clear background
+            gameCtx.fillStyle = '#0a0a0a';
+            gameCtx.fillRect(0, 0, w, h);
+
+            // Draw ceiling
+            gameCtx.fillStyle = '#111111';
             gameCtx.fillRect(0, 0, w, h / 2);
 
-            // Draw floor (bottom half)
-            gameCtx.fillStyle = '#2a2a2a';
+            // Draw floor
+            gameCtx.fillStyle = '#333333';
             gameCtx.fillRect(0, h / 2, w, h / 2);
 
             // Draw walls and enemies from raycasting
@@ -858,14 +953,12 @@
                 const rayY = Math.sin(rayAngle);
 
                 let maxDist = 300;
-                let hitColor = '#444';
                 let hitEnemy = false;
 
                 // Check for wall hits
                 const wallDist = castRayToWalls(rayX, rayY);
                 if (wallDist < maxDist) {
                     maxDist = wallDist;
-                    hitColor = '#666';
                 }
 
                 // Check for enemy hits
@@ -873,15 +966,16 @@
                     const enemyDist = castRayToEnemy(rayX, rayY, enemy);
                     if (enemyDist < maxDist && enemyDist > 0.1) {
                         maxDist = enemyDist;
-                        hitColor = '#cc3333';
                         hitEnemy = true;
                     }
                 }
 
                 // Draw wall slice
-                const wallHeight = Math.max(10, (h / maxDist) * 100);
-                const shade = Math.max(50, Math.min(255, 200 - maxDist * 0.5));
-                gameCtx.fillStyle = hitEnemy ? '#ff5555' : `rgb(${shade * 0.4}, ${shade * 0.4}, ${shade * 0.4})`;
+                const wallHeight = Math.max(10, (h / maxDist) * 80);
+                const brightness = Math.max(100, Math.min(255, 255 - maxDist * 2));
+                const shade = Math.floor(brightness);
+                
+                gameCtx.fillStyle = hitEnemy ? `rgb(255, ${Math.floor(shade * 0.3)}, ${Math.floor(shade * 0.3)})` : `rgb(${shade}, ${shade}, ${shade})`;
                 gameCtx.fillRect(i * (w / rayCount), (h - wallHeight) / 2, (w / rayCount) + 1, wallHeight);
             }
 
@@ -889,22 +983,19 @@
         }
 
         function castRayToWalls(rayX, rayY) {
-            let minDist = 300;
-
-            // Check walls
-            for (let step = 0; step < 300; step += 0.5) {
+            for (let step = 0.1; step < 300; step += 0.1) {
                 const x = gameState.camera.x + rayX * step;
                 const y = gameState.camera.y + rayY * step;
 
-                if (x < 0 || x > gameState.mapWidth || y < 0 || y > gameState.mapHeight) {
+                if (isWallColliding(x, y, 0.2)) {
                     return step;
                 }
             }
-            return minDist;
+            return 300;
         }
 
         function castRayToEnemy(rayX, rayY, enemy) {
-            for (let step = 0.1; step < 300; step += 0.1) {
+            for (let step = 0.1; step < 300; step += 0.05) {
                 const x = gameState.camera.x + rayX * step;
                 const y = gameState.camera.y + rayY * step;
 
