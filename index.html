@@ -157,22 +157,21 @@
             to { transform: rotate(var(--spin-angle)); }
         }
 
-        /* FPS Game Window Styles */
+        /* Game Window Styles */
         .game-window {
             position: fixed;
             bottom: 150px;
             right: 20px;
-            width: 800px;
+            width: 900px;
             height: 600px;
-            background: #000;
-            border: 3px solid #0f0;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #00d4ff;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
             z-index: 999;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            resize: both;
             min-width: 400px;
             min-height: 300px;
         }
@@ -182,207 +181,136 @@
         }
 
         .game-window-header {
-            background: linear-gradient(90deg, #0f0, #00aa00);
-            color: #000;
-            padding: 5px 10px;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            color: #fff;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
             cursor: move;
             user-select: none;
+            font-size: 16px;
         }
 
         .game-window-close {
-            background: #f00;
+            background: #ff4466;
             color: white;
             border: none;
-            padding: 2px 8px;
+            padding: 5px 12px;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 5px;
             font-weight: bold;
+            font-size: 16px;
         }
 
         .game-window-close:hover {
-            background: #ff0000;
-        }
-
-        #gameCanvas {
-            flex: 1;
-            display: block;
-            background: #1a1a1a;
-            cursor: crosshair;
-        }
-
-        #gameCanvas.paused {
-            cursor: auto;
+            background: #ff2244;
         }
 
         #gameContainer {
             flex: 1;
-            position: relative;
-            background: #1a1a1a;
-            overflow: hidden;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
         }
 
-        #hud {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        .game-section {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            padding: 15px;
+            color: #fff;
         }
 
-        #ui {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px;
-            border: 1px solid #0f0;
+        .game-section h3 {
+            margin-top: 0;
+            color: #00d4ff;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 8px;
         }
 
         .stat {
-            margin: 3px 0;
-        }
-
-        #crosshair {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
-
-        .crosshair-line {
-            position: absolute;
-            background: #0f0;
-            box-shadow: 0 0 5px #0f0;
-        }
-
-        .h-line {
-            width: 15px;
-            height: 2px;
-            left: 50%;
-            top: 50%;
-            transform: translateX(-50%);
-        }
-
-        .v-line {
-            width: 2px;
-            height: 15px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .dot {
-            width: 4px;
-            height: 4px;
-            background: #0f0;
-            border-radius: 50%;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 5px #0f0;
-        }
-
-        #pauseOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            z-index: 1002;
-            pointer-events: auto;
-        }
-
-        #pauseOverlay.active {
-            display: flex;
-        }
-
-        #pauseOverlay h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px #0f0;
-            letter-spacing: 2px;
-        }
-
-        #pauseOverlay p {
-            font-size: 16px;
             margin: 10px 0;
-        }
-
-        #gameStartScreen, #gameOverScreen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            font-size: 14px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            z-index: 1001;
+            justify-content: space-between;
         }
 
-        #gameStartScreen h1, #gameOverScreen h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px #0f0;
-            letter-spacing: 2px;
-        }
-
-        #gameStartScreen p, #gameOverScreen p {
-            font-size: 14px;
-            margin: 5px 0;
-        }
-
-        .game-start-button {
-            margin-top: 15px;
-            padding: 8px 20px;
-            font-size: 14px;
-            background: #0f0;
-            color: #000;
-            border: 2px solid #0f0;
-            cursor: pointer;
+        .stat-label {
             font-weight: bold;
+        }
+
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .click-button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s;
-            font-family: 'Courier New', monospace;
         }
 
-        .game-start-button:hover {
-            background: #00ff00;
-            box-shadow: 0 0 15px #0f0;
+        .click-button:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+            transform: scale(1.05);
         }
 
-        #gameOverScreen {
-            display: none;
+        .click-button:active {
+            transform: scale(0.98);
+        }
+
+        .upgrade-button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(0, 180, 255, 0.3);
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upgrade-button:hover:not(:disabled) {
+            background: rgba(0, 180, 255, 0.6);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .upgrade-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .upgrade-button.affordable {
+            background: rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+
+        .upgrade-button.affordable:hover {
+            background: rgba(0, 255, 136, 0.6);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
         }
 
         .open-game-btn {
             padding: 8px 15px;
             font-size: 14px;
-            background: #0f0;
+            background: #00d4ff;
             color: #000;
             border: none;
             cursor: pointer;
@@ -392,22 +320,49 @@
         }
 
         .open-game-btn:hover {
-            background: #00ff00;
-            box-shadow: 0 0 10px lime;
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
         }
 
-        #weaponHUD {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-            background: rgba(0, 0, 0, 0.5);
+        #upgrades {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .upgrade-item {
+            background: rgba(0, 0, 0, 0.2);
             padding: 8px;
-            border: 1px solid #0f0;
-            text-align: right;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .upgrade-name {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .upgrade-cost {
+            color: #ffaa00;
+            font-size: 11px;
+        }
+
+        .open-game-btn {
+            padding: 8px 15px;
+            font-size: 14px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .open-game-btn:hover {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
         }
     
     </style>
@@ -453,7 +408,7 @@
             <h2>Games</h2>
             <list>
                 <ul>
-                    <button class="open-game-btn" onclick="openGameWindow()">Play FPS Game</button>
+                    <button class="open-game-btn" onclick="openGameWindow()">Play Water Tycoon</button>
                 </ul>
             </list>
 
@@ -524,501 +479,184 @@
         <p>*the picture on the return button is generated by gemini</p>
     </div>
 
-    <!-- FPS Game Window -->
+    <!-- Water Tycoon Game Window -->
     <div class="game-window" id="gameWindow">
         <div class="game-window-header" id="gameHeader">
-            <span>FPS GAME - MAZE SHOOTER</span>
+            <span>💧 WATER TYCOON 💧</span>
             <button class="game-window-close" onclick="closeGameWindow()">✕</button>
         </div>
         <div id="gameContainer">
-            <canvas id="gameCanvas"></canvas>
-            <div id="hud">
-                <div id="crosshair">
-                    <div class="crosshair-line h-line"></div>
-                    <div class="crosshair-line v-line"></div>
-                    <div class="crosshair-line dot"></div>
+            <!-- Left Section: Main Stats & Click -->
+            <div style="flex: 0.8;">
+                <div class="game-section">
+                    <h3>💰 FINANCES</h3>
+                    <div class="stat">
+                        <span class="stat-label">Money:</span>
+                        <span class="stat-value">$<span id="moneyDisplay">0</span></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Per Second:</span>
+                        <span class="stat-value">$<span id="psDisplay">0</span></span>
+                    </div>
+                    <button class="click-button" onclick="sellWater()">💧 SELL WATER</button>
                 </div>
-                <div id="ui">
-                    <div class="stat">HEALTH: <span id="healthVal">100</span></div>
-                    <div class="stat">KILLS: <span id="killsVal">0</span></div>
-                    <div class="stat">WAVE: <span id="waveVal">1</span></div>
+
+                <div class="game-section">
+                    <h3>📊 PRODUCTION</h3>
+                    <div class="stat">
+                        <span class="stat-label">Water Bottles:</span>
+                        <span class="stat-value"><span id="bottlesDisplay">0</span></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Production Rate:</span>
+                        <span class="stat-value"><span id="rateDisplay">1</span>/s</span>
+                    </div>
                 </div>
-                <div id="weaponHUD">
-                    <div style="font-size: 14px; margin-bottom: 5px;">WEAPON</div>
-                    <div>AMMO: <span id="ammoVal">30</span>/30</div>
+
+                <div class="game-section">
+                    <h3>🏆 LEVEL</h3>
+                    <div class="stat">
+                        <span class="stat-label">Current:</span>
+                        <span class="stat-value">LVL <span id="levelDisplay">1</span></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Progress:</span>
+                        <span class="stat-value"><span id="progressDisplay">0</span>%</span>
+                    </div>
                 </div>
             </div>
-            <div id="pauseOverlay">
-                <h1>PAUSED</h1>
-                <p style="font-size: 18px; margin-top: 20px;">Press ESC to Resume</p>
-            </div>
-            <div id="gameStartScreen">
-                <h1>MAZE SHOOTER</h1>
-                <p>Survive the maze</p>
-                <p>Use Mouse to Look Around</p>
-                <p>WASD to Move - Click to Shoot</p>
-                <p style="margin-top: 20px; color: #00ff00;">Press ESC to Pause</p>
-                <button class="game-start-button" onclick="startGame()">START GAME</button>
-            </div>
-            <div id="gameOverScreen">
-                <h1>MISSION FAILED</h1>
-                <p style="font-size: 18px;">KILLS: <span id="finalKills">0</span></p>
-                <p style="font-size: 18px;">WAVE REACHED: <span id="finalWave">1</span></p>
-                <button class="game-start-button" onclick="resetGame()">RETRY MISSION</button>
+
+            <!-- Right Section: Upgrades -->
+            <div style="flex: 1;">
+                <div class="game-section">
+                    <h3>🔧 UPGRADES</h3>
+                    <div id="upgrades"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let gameCanvas, gameCtx, gameRunning = false;
-        let gamePaused = false;
-        let gameState = null;
+        let gameState = {
+            money: 0,
+            bottles: 0,
+            perSecond: 0,
+            level: 1,
+            totalMoneyEarned: 0,
+            upgrades: {
+                workers: { count: 0, cost: 10, baseIncome: 1 },
+                factory: { count: 0, cost: 100, baseIncome: 5 },
+                distributor: { count: 0, cost: 1000, baseIncome: 25 },
+                marketing: { count: 0, cost: 5000, baseIncome: 100 },
+                pipeline: { count: 0, cost: 50000, baseIncome: 500 }
+            }
+        };
+
         let isDragging = false;
         let dragOffset = { x: 0, y: 0 };
-        let maze = [];
-
-        function generateMaze() {
-            const width = 100;
-            const height = 100;
-            const walls = [];
-
-            // Outer walls
-            for (let x = 0; x < width; x++) {
-                walls.push({ x1: x, y1: 0, x2: x + 1, y2: 0 });
-                walls.push({ x1: x, y1: height, x2: x + 1, y2: height });
-            }
-            for (let y = 0; y < height; y++) {
-                walls.push({ x1: 0, y1: y, x2: 0, y2: y + 1 });
-                walls.push({ x1: width, y1: y, x2: width, y2: y + 1 });
-            }
-
-            // Interior walls
-            const cellSize = 10;
-            for (let x = cellSize; x < width; x += cellSize) {
-                for (let y = 0; y < height; y += cellSize / 2) {
-                    walls.push({ x1: x, y1: y, x2: x, y2: y + cellSize / 2 });
-                }
-            }
-            for (let y = cellSize; y < height; y += cellSize) {
-                for (let x = 0; x < width; x += cellSize / 2) {
-                    if (Math.random() > 0.3) {
-                        walls.push({ x1: x, y1: y, x2: x + cellSize / 2, y2: y });
-                    }
-                }
-            }
-
-            return walls;
-        }
 
         function openGameWindow() {
             document.getElementById('gameWindow').classList.add('active');
-            initializeGame();
+            startGameLoop();
         }
 
         function closeGameWindow() {
             document.getElementById('gameWindow').classList.remove('active');
-            if (gameRunning) {
-                gameRunning = false;
-                gamePaused = false;
+        }
+
+        function sellWater() {
+            gameState.money += 1;
+            gameState.totalMoneyEarned += 1;
+            gameState.bottles += 1;
+            updateDisplay();
+        }
+
+        function calculatePerSecond() {
+            let ps = 0;
+            for (const upgradeKey in gameState.upgrades) {
+                const upgrade = gameState.upgrades[upgradeKey];
+                ps += upgrade.count * upgrade.baseIncome;
+            }
+            return ps;
+        }
+
+        function buyUpgrade(upgradeName) {
+            const upgrade = gameState.upgrades[upgradeName];
+            if (gameState.money >= upgrade.cost) {
+                gameState.money -= upgrade.cost;
+                upgrade.count++;
+                upgrade.cost = Math.floor(upgrade.cost * 1.15);
+                gameState.perSecond = calculatePerSecond();
+                updateDisplay();
+                updateUpgrades();
             }
         }
 
-        function togglePause() {
-            if (!gameRunning) return;
+        function updateDisplay() {
+            document.getElementById('moneyDisplay').textContent = formatNumber(gameState.money);
+            document.getElementById('psDisplay').textContent = formatNumber(gameState.perSecond);
+            document.getElementById('bottlesDisplay').textContent = formatNumber(gameState.bottles);
+            document.getElementById('rateDisplay').textContent = formatNumber(gameState.perSecond);
+            document.getElementById('levelDisplay').textContent = gameState.level;
             
-            gamePaused = !gamePaused;
-            const pauseOverlay = document.getElementById('pauseOverlay');
-            const canvas = document.getElementById('gameCanvas');
-            
-            if (gamePaused) {
-                pauseOverlay.classList.add('active');
-                canvas.classList.add('paused');
-            } else {
-                pauseOverlay.classList.remove('active');
-                canvas.classList.remove('paused');
+            const progress = Math.min(99, Math.floor((gameState.totalMoneyEarned % (gameState.level * 1000)) / (gameState.level * 1000) * 100));
+            document.getElementById('progressDisplay').textContent = progress;
+
+            if (gameState.totalMoneyEarned >= gameState.level * 1000) {
+                gameState.level++;
             }
         }
 
-        function initializeGame() {
-            gameCanvas = document.getElementById('gameCanvas');
-            gameCtx = gameCanvas.getContext('2d');
-            
-            const gameWindow = document.getElementById('gameWindow');
-            gameCanvas.width = gameWindow.offsetWidth;
-            gameCanvas.height = gameWindow.offsetHeight - 25;
+        function updateUpgrades() {
+            const upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = '';
 
-            if (!gameState) {
-                maze = generateMaze();
-                gameState = {
-                    camera: {
-                        x: 10,
-                        y: 10,
-                        angle: 0,
-                        fov: Math.PI / 3
-                    },
-                    player: {
-                        vx: 0,
-                        vy: 0,
-                        speed: 0.5,
-                        height: 1.7
-                    },
-                    keys: {},
-                    enemies: [],
-                    projectiles: [],
-                    kills: 0,
-                    wave: 1,
-                    ammo: 30,
-                    maxAmmo: 30,
-                    health: 100,
-                    maxHealth: 100,
-                    mapWidth: 100,
-                    mapHeight: 100
-                };
+            const upgradeNames = {
+                workers: '👷 Workers',
+                factory: '🏭 Factory',
+                distributor: '🚚 Distributor',
+                marketing: '📢 Marketing',
+                pipeline: '🌊 Pipeline'
+            };
 
-                setupGameControls();
+            for (const [key, upgrade] of Object.entries(gameState.upgrades)) {
+                const canAfford = gameState.money >= upgrade.cost;
+                const button = document.createElement('button');
+                button.className = `upgrade-button ${canAfford ? 'affordable' : ''}`;
+                button.disabled = !canAfford;
+                button.onclick = () => buyUpgrade(key);
+
+                button.innerHTML = `
+                    <div class="upgrade-item">
+                        <div class="upgrade-name">${upgradeNames[key]}</div>
+                        <div class="upgrade-cost">Cost: $${formatNumber(upgrade.cost)}</div>
+                        <div style="color: #00ff88; font-size: 11px;">Owned: ${upgrade.count}</div>
+                        <div style="color: #ffaa00; font-size: 11px;">+$${formatNumber(upgrade.baseIncome)}/s</div>
+                    </div>
+                `;
+                upgradesDiv.appendChild(button);
             }
         }
 
-        function setupGameControls() {
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    togglePause();
-                    return;
-                }
-                gameState.keys[e.key.toLowerCase()] = true;
-            });
-            
-            document.addEventListener('keyup', (e) => {
-                gameState.keys[e.key.toLowerCase()] = false;
-            });
-            
-            gameCanvas.addEventListener('mousemove', (e) => {
-                if (gameRunning && !gamePaused) {
-                    const rect = gameCanvas.getBoundingClientRect();
-                    const centerX = rect.width / 2;
-                    
-                    const deltaX = e.clientX - rect.left - centerX;
-                    gameState.camera.angle += deltaX * 0.005;
-                }
-            });
-            
-            gameCanvas.addEventListener('click', (e) => {
-                if (gameRunning && !gamePaused) {
-                    shootProjectile();
-                }
-            });
-        }
-
-        function startGame() {
-            document.getElementById('gameStartScreen').style.display = 'none';
-            gameRunning = true;
-            gamePaused = false;
-            gameState.kills = 0;
-            gameState.wave = 1;
-            gameState.health = gameState.maxHealth;
-            gameState.ammo = gameState.maxAmmo;
-            gameState.enemies = [];
-            gameState.projectiles = [];
-            gameState.camera.x = 10;
-            gameState.camera.y = 10;
-            spawnWave();
-            gameLoop();
-        }
-
-        function resetGame() {
-            gameState.camera.x = 10;
-            gameState.camera.y = 10;
-            gameState.camera.angle = 0;
-            gameState.health = gameState.maxHealth;
-            gameState.kills = 0;
-            gameState.wave = 1;
-            gameState.ammo = gameState.maxAmmo;
-            gameState.enemies = [];
-            gameState.projectiles = [];
-            gamePaused = false;
-            document.getElementById('gameOverScreen').style.display = 'none';
-            document.getElementById('pauseOverlay').classList.remove('active');
-            document.getElementById('gameStartScreen').style.display = 'flex';
-        }
-
-        function shootProjectile() {
-            if (!gameRunning || gameState.ammo <= 0) return;
-            
-            gameState.projectiles.push({
-                x: gameState.camera.x,
-                y: gameState.camera.y,
-                angle: gameState.camera.angle,
-                speed: 0.5,
-                distance: 0,
-                maxDistance: 50
-            });
-            
-            gameState.ammo--;
-            if (gameState.ammo <= 0) gameState.ammo = gameState.maxAmmo;
-        }
-
-        function spawnWave() {
-            const count = 2 + gameState.wave;
-            for (let i = 0; i < count; i++) {
-                let x, y, valid;
-                do {
-                    valid = true;
-                    x = 20 + Math.random() * (gameState.mapWidth - 40);
-                    y = 20 + Math.random() * (gameState.mapHeight - 40);
-                    
-                    const dist = Math.hypot(x - gameState.camera.x, y - gameState.camera.y);
-                    if (dist < 15) valid = false;
-                    
-                    for (const wall of maze) {
-                        if (Math.hypot(x - wall.x1, y - wall.y1) < 2) valid = false;
-                    }
-                } while (!valid);
-
-                gameState.enemies.push({
-                    x: x,
-                    y: y,
-                    health: 30 + gameState.wave * 10,
-                    maxHealth: 30 + gameState.wave * 10,
-                    size: 0.8,
-                    speed: 0.1 + gameState.wave * 0.02
-                });
-            }
-        }
-
-        function isWallColliding(x, y, radius) {
-            for (const wall of maze) {
-                const distToWall = pointToLineDistance(x, y, wall.x1, wall.y1, wall.x2, wall.y2);
-                if (distToWall < radius) return true;
-            }
-            return false;
-        }
-
-        function pointToLineDistance(px, py, x1, y1, x2, y2) {
-            const A = px - x1;
-            const B = py - y1;
-            const C = x2 - x1;
-            const D = y2 - y1;
-
-            const dot = A * C + B * D;
-            const lenSq = C * C + D * D;
-
-            let param = -1;
-            if (lenSq !== 0) param = dot / lenSq;
-
-            let xx, yy;
-
-            if (param < 0) {
-                xx = x1;
-                yy = y1;
-            } else if (param > 1) {
-                xx = x2;
-                yy = y2;
-            } else {
-                xx = x1 + param * C;
-                yy = y1 + param * D;
-            }
-
-            const dx = px - xx;
-            const dy = py - yy;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function updateGame() {
-            if (gamePaused) return;
-
-            const forwardX = Math.cos(gameState.camera.angle);
-            const forwardY = Math.sin(gameState.camera.angle);
-            const sideX = Math.cos(gameState.camera.angle + Math.PI / 2);
-            const sideY = Math.sin(gameState.camera.angle + Math.PI / 2);
-
-            gameState.player.vx = 0;
-            gameState.player.vy = 0;
-
-            if (gameState.keys['w']) {
-                gameState.player.vx += forwardX * gameState.player.speed;
-                gameState.player.vy += forwardY * gameState.player.speed;
-            }
-            if (gameState.keys['s']) {
-                gameState.player.vx -= forwardX * gameState.player.speed;
-                gameState.player.vy -= forwardY * gameState.player.speed;
-            }
-            if (gameState.keys['a']) {
-                gameState.player.vx += sideX * gameState.player.speed;
-                gameState.player.vy += sideY * gameState.player.speed;
-            }
-            if (gameState.keys['d']) {
-                gameState.player.vx -= sideX * gameState.player.speed;
-                gameState.player.vy -= sideY * gameState.player.speed;
-            }
-
-            const newX = gameState.camera.x + gameState.player.vx;
-            const newY = gameState.camera.y + gameState.player.vy;
-
-            if (!isWallColliding(newX, newY, 0.5)) {
-                gameState.camera.x = newX;
-                gameState.camera.y = newY;
-            }
-
-            gameState.camera.x = Math.max(1, Math.min(gameState.mapWidth - 1, gameState.camera.x));
-            gameState.camera.y = Math.max(1, Math.min(gameState.mapHeight - 1, gameState.camera.y));
-
-            // Update projectiles
-            for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
-                const proj = gameState.projectiles[i];
-                proj.distance += proj.speed;
-                proj.x += Math.cos(proj.angle) * proj.speed;
-                proj.y += Math.sin(proj.angle) * proj.speed;
-
-                if (proj.distance > proj.maxDistance || isWallColliding(proj.x, proj.y, 0.1)) {
-                    gameState.projectiles.splice(i, 1);
-                    continue;
-                }
-
-                // Check collision with enemies
-                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
-                    const enemy = gameState.enemies[j];
-                    const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
-                    if (dist < enemy.size + 0.3) {
-                        enemy.health -= 30;
-                        gameState.projectiles.splice(i, 1);
-
-                        if (enemy.health <= 0) {
-                            gameState.kills++;
-                            gameState.enemies.splice(j, 1);
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Update enemies
-            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const enemy = gameState.enemies[i];
-                const dx = gameState.camera.x - enemy.x;
-                const dy = gameState.camera.y - enemy.y;
-                const dist = Math.hypot(dx, dy);
-
-                if (dist > 0.5) {
-                    const newEnemyX = enemy.x + (dx / dist) * enemy.speed;
-                    const newEnemyY = enemy.y + (dy / dist) * enemy.speed;
-                    
-                    if (!isWallColliding(newEnemyX, newEnemyY, 0.4)) {
-                        enemy.x = newEnemyX;
-                        enemy.y = newEnemyY;
-                    }
-                }
-
-                // Damage player if too close
-                if (dist < 1.5) {
-                    gameState.health -= 0.3;
-                }
-            }
-
-            if (gameState.enemies.length === 0 && gameRunning) {
-                gameState.wave++;
-                spawnWave();
-            }
-
-            if (gameState.health <= 0) {
-                gameRunning = false;
-                document.getElementById('finalKills').textContent = gameState.kills;
-                document.getElementById('finalWave').textContent = gameState.wave;
-                document.getElementById('gameOverScreen').style.display = 'flex';
-            }
-        }
-
-        function drawGame() {
-            const w = gameCanvas.width;
-            const h = gameCanvas.height;
-
-            // Clear background
-            gameCtx.fillStyle = '#0a0a0a';
-            gameCtx.fillRect(0, 0, w, h);
-
-            // Draw ceiling
-            gameCtx.fillStyle = '#111111';
-            gameCtx.fillRect(0, 0, w, h / 2);
-
-            // Draw floor
-            gameCtx.fillStyle = '#333333';
-            gameCtx.fillRect(0, h / 2, w, h / 2);
-
-            // Draw walls and enemies from raycasting
-            const rayCount = 200;
-            const rayStep = gameState.camera.fov / rayCount;
-
-            for (let i = 0; i < rayCount; i++) {
-                const rayAngle = gameState.camera.angle - gameState.camera.fov / 2 + i * rayStep;
-                const rayX = Math.cos(rayAngle);
-                const rayY = Math.sin(rayAngle);
-
-                let maxDist = 300;
-                let hitEnemy = false;
-
-                // Check for wall hits
-                const wallDist = castRayToWalls(rayX, rayY);
-                if (wallDist < maxDist) {
-                    maxDist = wallDist;
-                }
-
-                // Check for enemy hits
-                for (const enemy of gameState.enemies) {
-                    const enemyDist = castRayToEnemy(rayX, rayY, enemy);
-                    if (enemyDist < maxDist && enemyDist > 0.1) {
-                        maxDist = enemyDist;
-                        hitEnemy = true;
-                    }
-                }
-
-                // Draw wall slice
-                const wallHeight = Math.max(10, (h / maxDist) * 80);
-                const brightness = Math.max(100, Math.min(255, 255 - maxDist * 2));
-                const shade = Math.floor(brightness);
-                
-                gameCtx.fillStyle = hitEnemy ? `rgb(255, ${Math.floor(shade * 0.3)}, ${Math.floor(shade * 0.3)})` : `rgb(${shade}, ${shade}, ${shade})`;
-                gameCtx.fillRect(i * (w / rayCount), (h - wallHeight) / 2, (w / rayCount) + 1, wallHeight);
-            }
-
-            updateUI();
-        }
-
-        function castRayToWalls(rayX, rayY) {
-            for (let step = 0.1; step < 300; step += 0.1) {
-                const x = gameState.camera.x + rayX * step;
-                const y = gameState.camera.y + rayY * step;
-
-                if (isWallColliding(x, y, 0.2)) {
-                    return step;
-                }
-            }
-            return 300;
-        }
-
-        function castRayToEnemy(rayX, rayY, enemy) {
-            for (let step = 0.1; step < 300; step += 0.05) {
-                const x = gameState.camera.x + rayX * step;
-                const y = gameState.camera.y + rayY * step;
-
-                const dist = Math.hypot(enemy.x - x, enemy.y - y);
-                if (dist < enemy.size) {
-                    return step;
-                }
-            }
-            return -1;
-        }
-
-        function updateUI() {
-            document.getElementById('healthVal').textContent = Math.max(0, Math.floor(gameState.health));
-            document.getElementById('killsVal').textContent = gameState.kills;
-            document.getElementById('waveVal').textContent = gameState.wave;
-            document.getElementById('ammoVal').textContent = gameState.ammo;
+        function formatNumber(num) {
+            if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+            return Math.floor(num).toString();
         }
 
         function gameLoop() {
-            if (!gameRunning) return;
-            updateGame();
-            drawGame();
+            gameState.money += gameState.perSecond / 60;
+            gameState.bottles += gameState.perSecond / 60;
+            gameState.totalMoneyEarned += gameState.perSecond / 60;
+            updateDisplay();
             requestAnimationFrame(gameLoop);
+        }
+
+        function startGameLoop() {
+            updateDisplay();
+            updateUpgrades();
+            gameLoop();
         }
 
         // Dragging functionality
