@@ -9,6 +9,53 @@
 
   gtag('config', 'G-TC1Y81603Q');
 </script>
+
+<script type="text/javascript" src="https://gstatic.com"></script>
+<script type="text/javascript">
+  // Load core chart package safely
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawAnalyticsChart);
+
+  function drawAnalyticsChart() {
+    // Structured Data
+    var data = google.visualization.arrayToDataTable([
+      ['Traffic Source', 'Conversions'],
+      ['Organic Search', 450],
+      ['Direct Traffic', 320],
+      ['Social Media', 180],
+      ['Referral', 90]
+    ]);
+
+    var options = {
+      title: 'Conversion Breakdown by Channel',
+      width: '100%',
+      height: 400
+    };
+
+    // Bind to your designated container element
+    var chart = new google.visualization.ColumnChart(document.getElementById('analytics_chart_div'));
+    
+    // 3. OPTIONAL: Track Chart Interactions in Google Analytics
+    google.visualization.events.addListener(chart, 'select', function() {
+      var selectedItem = chart.getSelection()[0];
+      if (selectedItem) {
+        var channelName = data.getValue(selectedItem.row, 0);
+        
+        // Fire custom event to your active GA4 configuration
+        gtag('event', 'chart_interaction', {
+          'event_category': 'Engagement',
+          'event_label': 'Clicked ' + channelName
+        });
+      }
+    });
+
+    chart.draw(data, options);
+  }
+</script>
+
+<!-- 4. HTML CONTAINER -->
+<div id="analytics_chart_div"></div>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./photos/Capture.PNG" type="image/x-icon">
