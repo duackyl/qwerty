@@ -162,8 +162,8 @@
             position: fixed;
             bottom: 150px;
             right: 20px;
-            width: 600px;
-            height: 400px;
+            width: 800px;
+            height: 600px;
             background: #000;
             border: 3px solid #0f0;
             border-radius: 5px;
@@ -207,12 +207,18 @@
         #gameCanvas {
             flex: 1;
             display: block;
+            background: #1a1a1a;
+            cursor: none;
+        }
+
+        #gameCanvas.paused {
+            cursor: auto;
         }
 
         #gameContainer {
             flex: 1;
             position: relative;
-            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            background: #1a1a1a;
             overflow: hidden;
         }
 
@@ -227,56 +233,96 @@
 
         #ui {
             position: absolute;
-            bottom: 5px;
-            left: 5px;
+            bottom: 10px;
+            left: 10px;
             color: #0f0;
-            font-family: monospace;
-            font-size: 10px;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border: 1px solid #0f0;
         }
 
         .stat {
-            margin: 2px 0;
+            margin: 3px 0;
         }
 
         #crosshair {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             pointer-events: none;
         }
 
         .crosshair-line {
             position: absolute;
-            background: lime;
-            box-shadow: 0 0 3px lime;
+            background: #0f0;
+            box-shadow: 0 0 5px #0f0;
         }
 
         .h-line {
-            width: 12px;
-            height: 1px;
+            width: 15px;
+            height: 2px;
             left: 50%;
             top: 50%;
             transform: translateX(-50%);
         }
 
         .v-line {
-            width: 1px;
-            height: 12px;
+            width: 2px;
+            height: 15px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
         }
 
         .dot {
-            width: 3px;
-            height: 3px;
-            background: lime;
+            width: 4px;
+            height: 4px;
+            background: #0f0;
             border-radius: 50%;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 3px lime;
+            box-shadow: 0 0 5px #0f0;
+        }
+
+        #pauseOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            z-index: 1002;
+            pointer-events: auto;
+        }
+
+        #pauseOverlay.active {
+            display: flex;
+        }
+
+        #pauseOverlay h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #0f0;
+            letter-spacing: 2px;
+        }
+
+        #pauseOverlay p {
+            font-size: 16px;
+            margin: 10px 0;
         }
 
         #gameStartScreen, #gameOverScreen {
@@ -291,37 +337,39 @@
             justify-content: center;
             align-items: center;
             color: #0f0;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             text-align: center;
             z-index: 1001;
         }
 
         #gameStartScreen h1, #gameOverScreen h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px lime;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px #0f0;
+            letter-spacing: 2px;
         }
 
         #gameStartScreen p, #gameOverScreen p {
-            font-size: 11px;
-            margin: 3px 0;
+            font-size: 14px;
+            margin: 5px 0;
         }
 
         .game-start-button {
-            margin-top: 10px;
-            padding: 5px 15px;
-            font-size: 12px;
+            margin-top: 15px;
+            padding: 8px 20px;
+            font-size: 14px;
             background: #0f0;
             color: #000;
-            border: none;
+            border: 2px solid #0f0;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            font-family: 'Courier New', monospace;
         }
 
         .game-start-button:hover {
             background: #00ff00;
-            box-shadow: 0 0 10px lime;
+            box-shadow: 0 0 15px #0f0;
         }
 
         #gameOverScreen {
@@ -343,6 +391,20 @@
         .open-game-btn:hover {
             background: #00ff00;
             box-shadow: 0 0 10px lime;
+        }
+
+        #weaponHUD {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border: 1px solid #0f0;
+            text-align: right;
         }
     
     </style>
@@ -462,7 +524,7 @@
     <!-- FPS Game Window -->
     <div class="game-window" id="gameWindow">
         <div class="game-window-header" id="gameHeader">
-            <span>FPS GAME</span>
+            <span>FPS GAME - FIRST PERSON SHOOTER</span>
             <button class="game-window-close" onclick="closeGameWindow()">✕</button>
         </div>
         <div id="gameContainer">
@@ -474,29 +536,39 @@
                     <div class="crosshair-line dot"></div>
                 </div>
                 <div id="ui">
-                    <div class="stat">HP: <span id="healthVal">100</span></div>
-                    <div class="stat">AMO: <span id="ammoVal">30</span></div>
-                    <div class="stat">K: <span id="killsVal">0</span></div>
-                    <div class="stat">W: <span id="waveVal">1</span></div>
+                    <div class="stat">HEALTH: <span id="healthVal">100</span></div>
+                    <div class="stat">KILLS: <span id="killsVal">0</span></div>
+                    <div class="stat">WAVE: <span id="waveVal">1</span></div>
+                </div>
+                <div id="weaponHUD">
+                    <div style="font-size: 14px; margin-bottom: 5px;">WEAPON</div>
+                    <div>AMMO: <span id="ammoVal">30</span>/30</div>
                 </div>
             </div>
+            <div id="pauseOverlay">
+                <h1>PAUSED</h1>
+                <p style="font-size: 18px; margin-top: 20px;">Press ESC to Resume</p>
+            </div>
             <div id="gameStartScreen">
-                <h1>FPS GAME</h1>
-                <p>Click to shoot</p>
-                <p>WASD to move</p>
-                <button class="game-start-button" onclick="startGame()">START</button>
+                <h1>█▀▀ █▀█ █▀ █▀▄▀█ █▀█ █▀ █ ▀█▀ █▀▀ █▀▄ █▀▄▀█ █▀█ █▀▄ █▀▀</h1>
+                <p>Use Mouse to Look Around</p>
+                <p>WASD to Move - SPACE to Jump</p>
+                <p>Click to Shoot - Survive the waves!</p>
+                <p style="margin-top: 20px; color: #00ff00;">Press ESC to Pause</p>
+                <button class="game-start-button" onclick="startGame()">START GAME</button>
             </div>
             <div id="gameOverScreen">
-                <h1>GAME OVER</h1>
-                <p>KILLS: <span id="finalKills">0</span></p>
-                <p>WAVE: <span id="finalWave">1</span></p>
-                <button class="game-start-button" onclick="resetGame()">RESTART</button>
+                <h1>MISSION FAILED</h1>
+                <p style="font-size: 18px;">KILLS: <span id="finalKills">0</span></p>
+                <p style="font-size: 18px;">WAVE REACHED: <span id="finalWave">1</span></p>
+                <button class="game-start-button" onclick="resetGame()">RETRY MISSION</button>
             </div>
         </div>
     </div>
 
     <script>
         let gameCanvas, gameCtx, gameRunning = false;
+        let gamePaused = false;
         let gameState = null;
         let isDragging = false;
         let dragOffset = { x: 0, y: 0 };
@@ -510,6 +582,23 @@
             document.getElementById('gameWindow').classList.remove('active');
             if (gameRunning) {
                 gameRunning = false;
+                gamePaused = false;
+            }
+        }
+
+        function togglePause() {
+            if (!gameRunning) return;
+            
+            gamePaused = !gamePaused;
+            const pauseOverlay = document.getElementById('pauseOverlay');
+            const canvas = document.getElementById('gameCanvas');
+            
+            if (gamePaused) {
+                pauseOverlay.classList.add('active');
+                canvas.classList.add('paused');
+            } else {
+                pauseOverlay.classList.remove('active');
+                canvas.classList.remove('paused');
             }
         }
 
@@ -517,33 +606,37 @@
             gameCanvas = document.getElementById('gameCanvas');
             gameCtx = gameCanvas.getContext('2d');
             
-            // Set canvas size
             const gameWindow = document.getElementById('gameWindow');
             gameCanvas.width = gameWindow.offsetWidth;
             gameCanvas.height = gameWindow.offsetHeight - 25;
 
             if (!gameState) {
                 gameState = {
+                    camera: {
+                        x: 150,
+                        y: 150,
+                        angle: 0,
+                        fov: Math.PI / 3
+                    },
                     player: {
-                        x: gameCanvas.width / 2,
-                        y: gameCanvas.height / 2,
-                        width: 20,
-                        height: 25,
                         vx: 0,
                         vy: 0,
-                        health: 100,
-                        maxHealth: 100,
-                        speed: 3
+                        speed: 2,
+                        jumpVel: 0,
+                        height: 1.7,
+                        viewBob: 0
                     },
-                    mouse: { x: gameCanvas.width / 2, y: gameCanvas.height / 2 },
                     keys: {},
-                    bullets: [],
                     enemies: [],
-                    particles: [],
+                    projectiles: [],
                     kills: 0,
                     wave: 1,
                     ammo: 30,
-                    maxAmmo: 30
+                    maxAmmo: 30,
+                    health: 100,
+                    maxHealth: 100,
+                    mapWidth: 400,
+                    mapHeight: 400
                 };
 
                 setupGameControls();
@@ -552,6 +645,10 @@
 
         function setupGameControls() {
             document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    togglePause();
+                    return;
+                }
                 gameState.keys[e.key.toLowerCase()] = true;
             });
             
@@ -560,43 +657,63 @@
             });
             
             gameCanvas.addEventListener('mousemove', (e) => {
-                const rect = gameCanvas.getBoundingClientRect();
-                gameState.mouse.x = e.clientX - rect.left;
-                gameState.mouse.y = e.clientY - rect.top;
+                if (gameRunning && !gamePaused) {
+                    const rect = gameCanvas.getBoundingClientRect();
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const deltaX = e.clientX - rect.left - centerX;
+                    gameState.camera.angle += deltaX * 0.003;
+                }
             });
             
-            gameCanvas.addEventListener('click', gameShoot);
+            gameCanvas.addEventListener('click', (e) => {
+                if (gameRunning && !gamePaused) {
+                    shootProjectile();
+                }
+            });
         }
 
         function startGame() {
             document.getElementById('gameStartScreen').style.display = 'none';
             gameRunning = true;
+            gamePaused = false;
+            gameState.kills = 0;
+            gameState.wave = 1;
+            gameState.health = gameState.maxHealth;
+            gameState.ammo = gameState.maxAmmo;
+            gameState.enemies = [];
+            gameState.projectiles = [];
             spawnWave();
             gameLoop();
         }
 
         function resetGame() {
-            gameState.player.health = gameState.player.maxHealth;
+            gameState.camera.x = 150;
+            gameState.camera.y = 150;
+            gameState.camera.angle = 0;
+            gameState.health = gameState.maxHealth;
             gameState.kills = 0;
             gameState.wave = 1;
             gameState.ammo = gameState.maxAmmo;
-            gameState.bullets = [];
             gameState.enemies = [];
-            gameState.particles = [];
+            gameState.projectiles = [];
+            gamePaused = false;
             document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('pauseOverlay').classList.remove('active');
             document.getElementById('gameStartScreen').style.display = 'flex';
         }
 
-        function gameShoot() {
+        function shootProjectile() {
             if (!gameRunning || gameState.ammo <= 0) return;
             
-            const angle = Math.atan2(gameState.mouse.y - gameState.player.y, gameState.mouse.x - gameState.player.x);
-            gameState.bullets.push({
-                x: gameState.player.x,
-                y: gameState.player.y,
-                vx: Math.cos(angle) * 6,
-                vy: Math.sin(angle) * 6,
-                life: 50
+            gameState.projectiles.push({
+                x: gameState.camera.x,
+                y: gameState.camera.y,
+                angle: gameState.camera.angle,
+                speed: 8,
+                distance: 0,
+                maxDistance: 300
             });
             
             gameState.ammo--;
@@ -604,81 +721,101 @@
         }
 
         function spawnWave() {
-            const count = 2 + gameState.wave;
+            const count = 3 + gameState.wave;
             for (let i = 0; i < count; i++) {
-                const angle = (Math.PI * 2 * i) / count;
-                const distance = 150;
+                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const distance = 100 + Math.random() * 50;
                 gameState.enemies.push({
-                    x: gameCanvas.width / 2 + Math.cos(angle) * distance,
-                    y: gameCanvas.height / 2 + Math.sin(angle) * distance,
-                    vx: 0,
-                    vy: 0,
-                    health: 20 + gameState.wave * 5,
-                    maxHealth: 20 + gameState.wave * 5,
-                    width: 15,
-                    height: 20,
-                    speed: 0.8 + gameState.wave * 0.2
+                    x: gameState.camera.x + Math.cos(angle) * distance,
+                    y: gameState.camera.y + Math.sin(angle) * distance,
+                    health: 30 + gameState.wave * 10,
+                    maxHealth: 30 + gameState.wave * 10,
+                    size: 0.5,
+                    speed: 0.5 + gameState.wave * 0.1
                 });
             }
         }
 
         function updateGame() {
-            // Player movement
+            if (gamePaused) return;
+
+            const forwardX = Math.cos(gameState.camera.angle);
+            const forwardY = Math.sin(gameState.camera.angle);
+            const sideX = Math.cos(gameState.camera.angle + Math.PI / 2);
+            const sideY = Math.sin(gameState.camera.angle + Math.PI / 2);
+
             gameState.player.vx = 0;
             gameState.player.vy = 0;
-            if (gameState.keys['w']) gameState.player.vy -= gameState.player.speed;
-            if (gameState.keys['s']) gameState.player.vy += gameState.player.speed;
-            if (gameState.keys['a']) gameState.player.vx -= gameState.player.speed;
-            if (gameState.keys['d']) gameState.player.vx += gameState.player.speed;
-            
-            gameState.player.x += gameState.player.vx;
-            gameState.player.y += gameState.player.vy;
-            gameState.player.x = Math.max(0, Math.min(gameCanvas.width - gameState.player.width, gameState.player.x));
-            gameState.player.y = Math.max(0, Math.min(gameCanvas.height - gameState.player.height, gameState.player.y));
 
-            // Bullets
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const b = gameState.bullets[i];
-                b.x += b.vx;
-                b.y += b.vy;
-                b.life--;
-                if (b.x < 0 || b.x > gameCanvas.width || b.y < 0 || b.y > gameCanvas.height || b.life <= 0) {
-                    gameState.bullets.splice(i, 1);
+            if (gameState.keys['w']) {
+                gameState.player.vx += forwardX * gameState.player.speed;
+                gameState.player.vy += forwardY * gameState.player.speed;
+            }
+            if (gameState.keys['s']) {
+                gameState.player.vx -= forwardX * gameState.player.speed;
+                gameState.player.vy -= forwardY * gameState.player.speed;
+            }
+            if (gameState.keys['a']) {
+                gameState.player.vx += sideX * gameState.player.speed;
+                gameState.player.vy += sideY * gameState.player.speed;
+            }
+            if (gameState.keys['d']) {
+                gameState.player.vx -= sideX * gameState.player.speed;
+                gameState.player.vy -= sideY * gameState.player.speed;
+            }
+
+            gameState.camera.x += gameState.player.vx;
+            gameState.camera.y += gameState.player.vy;
+
+            gameState.camera.x = Math.max(20, Math.min(gameState.mapWidth - 20, gameState.camera.x));
+            gameState.camera.y = Math.max(20, Math.min(gameState.mapHeight - 20, gameState.camera.y));
+
+            // Update projectiles
+            for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
+                const proj = gameState.projectiles[i];
+                proj.distance += proj.speed;
+                proj.x += Math.cos(proj.angle) * proj.speed;
+                proj.y += Math.sin(proj.angle) * proj.speed;
+
+                if (proj.distance > proj.maxDistance ||
+                    proj.x < 0 || proj.x > gameState.mapWidth ||
+                    proj.y < 0 || proj.y > gameState.mapHeight) {
+                    gameState.projectiles.splice(i, 1);
+                    continue;
+                }
+
+                // Check collision with enemies
+                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+                    const enemy = gameState.enemies[j];
+                    const dist = Math.hypot(enemy.x - proj.x, enemy.y - proj.y);
+                    if (dist < enemy.size + 0.2) {
+                        enemy.health -= 30;
+                        gameState.projectiles.splice(i, 1);
+
+                        if (enemy.health <= 0) {
+                            gameState.kills++;
+                            gameState.enemies.splice(j, 1);
+                        }
+                        break;
+                    }
                 }
             }
 
-            // Enemies
+            // Update enemies
             for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const e = gameState.enemies[i];
-                const dx = gameState.player.x - e.x;
-                const dy = gameState.player.y - e.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist > 0) {
-                    e.vx = (dx / dist) * e.speed;
-                    e.vy = (dy / dist) * e.speed;
-                }
-                e.x += e.vx;
-                e.y += e.vy;
+                const enemy = gameState.enemies[i];
+                const dx = gameState.camera.x - enemy.x;
+                const dy = gameState.camera.y - enemy.y;
+                const dist = Math.hypot(dx, dy);
 
-                for (let j = gameState.bullets.length - 1; j >= 0; j--) {
-                    const b = gameState.bullets[j];
-                    if (b.x > e.x && b.x < e.x + e.width && b.y > e.y && b.y < e.y + e.height) {
-                        e.health -= 20;
-                        gameState.bullets.splice(j, 1);
-                        if (e.health <= 0) {
-                            gameState.kills++;
-                            gameState.enemies.splice(i, 1);
-                            break;
-                        }
-                    }
+                if (dist > 0.1) {
+                    enemy.x += (dx / dist) * enemy.speed;
+                    enemy.y += (dy / dist) * enemy.speed;
                 }
 
-                if (gameState.enemies[i] && 
-                    gameState.player.x < e.x + e.width &&
-                    gameState.player.x + gameState.player.width > e.x &&
-                    gameState.player.y < e.y + e.height &&
-                    gameState.player.y + gameState.player.height > e.y) {
-                    gameState.player.health -= 0.3;
+                // Damage player if too close
+                if (dist < 2) {
+                    gameState.health -= 0.5;
                 }
             }
 
@@ -687,7 +824,7 @@
                 spawnWave();
             }
 
-            if (gameState.player.health <= 0) {
+            if (gameState.health <= 0) {
                 gameRunning = false;
                 document.getElementById('finalKills').textContent = gameState.kills;
                 document.getElementById('finalWave').textContent = gameState.wave;
@@ -696,37 +833,94 @@
         }
 
         function drawGame() {
-            gameCtx.fillStyle = '#87CEEB';
-            gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height / 2);
-            gameCtx.fillStyle = '#228B22';
-            gameCtx.fillRect(0, gameCanvas.height / 2, gameCanvas.width, gameCanvas.height / 2);
+            // Clear background
+            gameCtx.fillStyle = '#0a0a0a';
+            gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-            // Player
-            gameCtx.fillStyle = '#0080ff';
-            gameCtx.fillRect(gameState.player.x, gameState.player.y, gameState.player.width, gameState.player.height);
+            const w = gameCanvas.width;
+            const h = gameCanvas.height;
 
-            // Enemies
-            gameCtx.fillStyle = '#ff3333';
-            for (const e of gameState.enemies) {
-                gameCtx.fillRect(e.x, e.y, e.width, e.height);
-            }
+            // Draw ceiling (top half)
+            gameCtx.fillStyle = '#1a1a1a';
+            gameCtx.fillRect(0, 0, w, h / 2);
 
-            // Bullets
-            gameCtx.fillStyle = '#ffff00';
-            for (const b of gameState.bullets) {
-                gameCtx.beginPath();
-                gameCtx.arc(b.x, b.y, 2, 0, Math.PI * 2);
-                gameCtx.fill();
+            // Draw floor (bottom half)
+            gameCtx.fillStyle = '#2a2a2a';
+            gameCtx.fillRect(0, h / 2, w, h / 2);
+
+            // Draw walls and enemies from raycasting
+            const rayCount = 200;
+            const rayStep = gameState.camera.fov / rayCount;
+
+            for (let i = 0; i < rayCount; i++) {
+                const rayAngle = gameState.camera.angle - gameState.camera.fov / 2 + i * rayStep;
+                const rayX = Math.cos(rayAngle);
+                const rayY = Math.sin(rayAngle);
+
+                let maxDist = 300;
+                let hitColor = '#444';
+                let hitEnemy = false;
+
+                // Check for wall hits
+                const wallDist = castRayToWalls(rayX, rayY);
+                if (wallDist < maxDist) {
+                    maxDist = wallDist;
+                    hitColor = '#666';
+                }
+
+                // Check for enemy hits
+                for (const enemy of gameState.enemies) {
+                    const enemyDist = castRayToEnemy(rayX, rayY, enemy);
+                    if (enemyDist < maxDist && enemyDist > 0.1) {
+                        maxDist = enemyDist;
+                        hitColor = '#cc3333';
+                        hitEnemy = true;
+                    }
+                }
+
+                // Draw wall slice
+                const wallHeight = Math.max(10, (h / maxDist) * 100);
+                const shade = Math.max(50, Math.min(255, 200 - maxDist * 0.5));
+                gameCtx.fillStyle = hitEnemy ? '#ff5555' : `rgb(${shade * 0.4}, ${shade * 0.4}, ${shade * 0.4})`;
+                gameCtx.fillRect(i * (w / rayCount), (h - wallHeight) / 2, (w / rayCount) + 1, wallHeight);
             }
 
             updateUI();
         }
 
+        function castRayToWalls(rayX, rayY) {
+            let minDist = 300;
+
+            // Check walls
+            for (let step = 0; step < 300; step += 0.5) {
+                const x = gameState.camera.x + rayX * step;
+                const y = gameState.camera.y + rayY * step;
+
+                if (x < 0 || x > gameState.mapWidth || y < 0 || y > gameState.mapHeight) {
+                    return step;
+                }
+            }
+            return minDist;
+        }
+
+        function castRayToEnemy(rayX, rayY, enemy) {
+            for (let step = 0.1; step < 300; step += 0.1) {
+                const x = gameState.camera.x + rayX * step;
+                const y = gameState.camera.y + rayY * step;
+
+                const dist = Math.hypot(enemy.x - x, enemy.y - y);
+                if (dist < enemy.size) {
+                    return step;
+                }
+            }
+            return -1;
+        }
+
         function updateUI() {
-            document.getElementById('healthVal').textContent = Math.max(0, Math.floor(gameState.player.health));
-            document.getElementById('ammoVal').textContent = gameState.ammo;
+            document.getElementById('healthVal').textContent = Math.max(0, Math.floor(gameState.health));
             document.getElementById('killsVal').textContent = gameState.kills;
             document.getElementById('waveVal').textContent = gameState.wave;
+            document.getElementById('ammoVal').textContent = gameState.ammo;
         }
 
         function gameLoop() {
